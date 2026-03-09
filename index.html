@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mr.Vealon — Preuves & Résultats</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06060F;
+    --surface: #0D0D1F;
+    --surface2: #12122A;
+    --red: #E94560;
+    --blue: #627EEA;
+    --green: #16C784;
+    --orange: #F7931A;
+    --purple: #9B5DE5;
+    --gold: #FFD166;
+    --white: #F0F0FF;
+    --muted: #5A5A7A;
+    --border: rgba(255,255,255,0.07);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* HERO */
+  .hero {
+    padding: 100px 0 80px;
+    text-align: center;
+    position: relative;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(233,69,96,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(233,69,96,0.1); border: 1px solid rgba(233,69,96,0.3);
+    color: var(--red); padding: 6px 16px; border-radius: 100px;
+    font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 28px;
+  }
+  .hero-badge::before { content: '●'; font-size: 8px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .hero h1 {
+    font-family: 'Syne', sans-serif; font-size: clamp(38px, 6vw, 72px);
+    font-weight: 800; line-height: 1.05; letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .hero h1 span { color: var(--red); }
+  .hero p {
+    color: var(--muted); font-size: 18px; max-width: 520px; margin: 0 auto 48px;
+  }
+
+  /* SECTION LABELS */
+  .section { padding: 80px 0; }
+  .section-label {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 48px;
+  }
+  .section-label-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .section-label h2 {
+    font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800;
+  }
+  .section-label span { color: var(--muted); font-size: 14px; margin-left: auto; }
+
+  /* STATS GRID */
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px;
+    border: 1px solid var(--border); border-radius: 20px; overflow: hidden;
+    margin-bottom: 16px;
+  }
+  @media(min-width: 700px) { .stats-grid { grid-template-columns: repeat(4,1fr); } }
+  .stat-cell {
+    background: var(--surface); padding: 40px 28px;
+    position: relative; overflow: hidden;
+    transition: background 0.3s;
+  }
+  .stat-cell:hover { background: var(--surface2); }
+  .stat-cell::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .stat-cell.red::before { background: var(--red); }
+  .stat-cell.blue::before { background: var(--blue); }
+  .stat-cell.green::before { background: var(--green); }
+  .stat-cell.orange::before { background: var(--orange); }
+  .stat-number {
+    font-family: 'Syne', sans-serif; font-size: 52px; font-weight: 800;
+    line-height: 1; margin-bottom: 8px;
+  }
+  .stat-cell.red .stat-number { color: var(--red); }
+  .stat-cell.blue .stat-number { color: var(--blue); }
+  .stat-cell.green .stat-number { color: var(--green); }
+  .stat-cell.orange .stat-number { color: var(--orange); }
+  .stat-label { color: var(--muted); font-size: 13px; line-height: 1.4; }
+  .stat-source { font-size: 11px; color: #3A3A5A; margin-top: 8px; }
+
+  /* AVANT/APRÈS */
+  .compare-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+    border-radius: 20px; overflow: hidden; border: 1px solid var(--border);
+  }
+  @media(max-width:600px) { .compare-grid { grid-template-columns: 1fr; } }
+  .compare-col { background: var(--surface); padding: 32px; }
+  .compare-col.after { background: var(--surface2); }
+  .compare-header {
+    font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800;
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 28px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .compare-header.bad { color: #E74C3C; }
+  .compare-header.good { color: var(--green); }
+  .compare-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .compare-item:last-child { border-bottom: none; }
+  .compare-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .compare-text { color: #B0B0CC; line-height: 1.5; }
+  .compare-text strong { color: var(--white); font-weight: 500; }
+
+  /* RÉSULTATS POSSIBLES */
+  .results-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2px; border-radius: 20px; overflow: hidden; border: 1px solid var(--border);
+  }
+  .result-card {
+    background: var(--surface); padding: 32px;
+    transition: background 0.3s; position: relative; overflow: hidden;
+  }
+  .result-card:hover { background: var(--surface2); }
+  .result-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .result-card:hover::after { opacity: 1; }
+  .result-card.c1::after { background: var(--red); }
+  .result-card.c2::after { background: var(--blue); }
+  .result-card.c3::after { background: var(--green); }
+  .result-card.c4::after { background: var(--orange); }
+  .result-card.c5::after { background: var(--purple); }
+  .result-card.c6::after { background: var(--gold); }
+  .result-emoji { font-size: 32px; margin-bottom: 16px; display: block; }
+  .result-title {
+    font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700;
+    margin-bottom: 8px; color: var(--white);
+  }
+  .result-desc { color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+  /* PACK APERÇU */
+  .packs-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr));
+    gap: 16px;
+  }
+  .pack-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px; position: relative; overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .pack-card:hover { transform: translateY(-4px); }
+  .pack-card.ia:hover { border-color: var(--red); }
+  .pack-card.ecom:hover { border-color: var(--blue); }
+  .pack-card.trading:hover { border-color: var(--green); }
+  .pack-card.crypto:hover { border-color: var(--orange); }
+  .pack-glow {
+    position: absolute; top: -40px; right: -40px;
+    width: 120px; height: 120px; border-radius: 50%;
+    opacity: 0.15; pointer-events: none;
+  }
+  .pack-card.ia .pack-glow { background: var(--red); }
+  .pack-card.ecom .pack-glow { background: var(--blue); }
+  .pack-card.trading .pack-glow { background: var(--green); }
+  .pack-card.crypto .pack-glow { background: var(--orange); }
+  .pack-emoji { font-size: 36px; margin-bottom: 14px; display: block; }
+  .pack-name {
+    font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .pack-price {
+    font-size: 22px; font-weight: 700; margin-bottom: 16px;
+  }
+  .pack-card.ia .pack-price { color: var(--red); }
+  .pack-card.ecom .pack-price { color: var(--blue); }
+  .pack-card.trading .pack-price { color: var(--green); }
+  .pack-card.crypto .pack-price { color: var(--orange); }
+  .pack-items { list-style: none; }
+  .pack-items li {
+    font-size: 13px; color: var(--muted); padding: 5px 0;
+    border-bottom: 1px solid var(--border); display: flex; gap: 8px;
+  }
+  .pack-items li:last-child { border-bottom: none; }
+  .pack-items li::before { content: '›'; color: inherit; flex-shrink: 0; }
+
+  /* TÉMOIGNAGES */
+  .testimonials-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+    gap: 16px;
+  }
+  .testimonial {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px; position: relative;
+  }
+  .testimonial::before {
+    content: '"'; position: absolute; top: 16px; right: 24px;
+    font-size: 80px; line-height: 1; color: rgba(255,255,255,0.04);
+    font-family: 'Syne', sans-serif;
+  }
+  .stars { color: var(--gold); font-size: 15px; margin-bottom: 14px; letter-spacing: 2px; }
+  .testimonial-text {
+    font-size: 14px; color: #C0C0D8; line-height: 1.7;
+    margin-bottom: 20px; font-style: italic;
+  }
+  .testimonial-author {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .author-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; font-family: 'Syne', sans-serif;
+    flex-shrink: 0;
+  }
+  .author-name { font-weight: 600; font-size: 14px; }
+  .author-role { font-size: 12px; color: var(--muted); }
+  .testimonial-pack {
+    margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+  }
+  .pack-tag {
+    display: inline-block; padding: 2px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 600; margin-left: 6px;
+  }
+
+  /* PLACEHOLDER témoignage */
+  .testi-placeholder {
+    background: var(--surface); border: 1px dashed rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 40px 28px; text-align: center;
+  }
+  .testi-placeholder p { color: var(--muted); font-size: 14px; line-height: 1.8; }
+  .testi-placeholder strong { color: var(--white); }
+
+  /* DISCLAIMER */
+  .disclaimer {
+    background: rgba(231,76,60,0.06); border: 1px solid rgba(231,76,60,0.2);
+    border-radius: 12px; padding: 20px 24px;
+    display: flex; gap: 14px; align-items: flex-start; margin-top: 32px;
+  }
+  .disclaimer-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+  .disclaimer-text { font-size: 13px; color: #A88080; line-height: 1.6; }
+  .disclaimer-text strong { color: #CC8888; }
+
+  /* CTA */
+  .cta-section {
+    padding: 100px 0; text-align: center;
+    background: radial-gradient(ellipse at 50% 0%, rgba(233,69,96,0.08) 0%, transparent 70%);
+  }
+  .cta-section h2 {
+    font-family: 'Syne', sans-serif; font-size: clamp(28px,4vw,48px);
+    font-weight: 800; margin-bottom: 16px;
+  }
+  .cta-section p { color: var(--muted); margin-bottom: 40px; font-size: 16px; }
+  .cta-btn {
+    display: inline-block; background: var(--red); color: #fff;
+    padding: 18px 48px; border-radius: 100px;
+    font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;
+    text-decoration: none; letter-spacing: 0.02em;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 40px rgba(233,69,96,0.3);
+  }
+  .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 0 60px rgba(233,69,96,0.5); }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px; background: var(--border); margin: 0;
+    position: relative; z-index: 1;
+  }
+
+  /* ANIMATIONS */
+  .fade-in {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #2A2A4A; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">Preuves & Résultats — @Mr.Vealon</div>
+    <h1>Ce que tu peux<br>accomplir avec les<br><span>bonnes méthodes</span></h1>
+    <p>Statistiques réelles, résultats possibles, et contenu exact de chaque formation.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 1 — STATS -->
+<section class="section fade-in">
+  <div class="container">
+    <div class="section-label">
+      <div class="section-label-dot" style="background:var(--red)"></div>
+      <h2>L'IA en chiffres — pourquoi maintenant</h2>
+      <span>Sources officielles</span>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-cell red">
+        <div class="stat-number">40%</div>
+        <div class="stat-label">des tâches répétitives sont automatisables par l'IA dès aujourd'hui</div>
+        <div class="stat-source">McKinsey Global Institute, 2024</div>
+      </div>
+      <div class="stat-cell blue">
+        <div class="stat-number">3h</div>
+        <div class="stat-label">de productivité gagnées par jour pour les travailleurs qui maîtrisent l'IA</div>
+        <div class="stat-source">Salesforce Future of Work, 2025</div>
+      </div>
+      <div class="stat-cell green">
+        <div class="stat-number">73%</div>
+        <div class="stat-label">des entreprises utilisent déjà l'IA en 2025 — ceux qui ne savent pas sont en retard</div>
+        <div class="stat-source">World Economic Forum, 2025</div>
+      </div>
+      <div class="stat-cell orange">
+        <div class="stat-number">10x</div>
+        <div class="stat-label">plus rapide pour créer du contenu marketing avec les bons prompts IA</div>
+        <div class="stat-source">HubSpot State of AI, 2024</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 2 — AVANT/APRÈS -->
+<section class="section fade-in">
+  <div class="container">
+    <div class="section-label">
+      <div class="section-label-dot" style="background:var(--blue)"></div>
+      <h2>Avant vs Après — ce qui change concrètement</h2>
+      <span>Tous les packs</span>
+    </div>
+    <div class="compare-grid">
+      <div class="compare-col">
+        <div class="compare-header bad">❌ Avant les formations</div>
+        <div class="compare-item">
+          <span class="compare-icon">🤖</span>
+          <div class="compare-text"><strong>IA :</strong> 2h pour écrire un email. Prompts qui donnent des réponses inutiles. Chercher les outils au hasard.</div>
+        </div>
+        <div class="compare-item">
+          <span class="compare-icon">🛒</span>
+          <div class="compare-text"><strong>E-commerce :</strong> Boutique Shopify qui ne convertit pas. Produits choisis au feeling. Pubs Meta sans stratégie.</div>
+        </div>
+        <div class="compare-item">
+          <span class="compare-icon">📈</span>
+          <div class="compare-text"><strong>Trading :</strong> Pas de stop loss. Revenge trading après une perte. Aucun journal, impossible de progresser.</div>
+        </div>
+        <div class="compare-item">
+          <span class="compare-icon">₿</span>
+          <div class="compare-text"><strong>Crypto :</strong> Investir sans stratégie. Timer le marché. Se faire piéger par les arnaques et les rug pulls.</div>
+        </div>
+        <div class="compare-item">
+          <span class="compare-icon">🎯</span>
+          <div class="compare-text"><strong>Polymarket :</strong> Parier au hasard sans edge informationnel. Bankroll mal géré. Pas de méthode.</div>
+        </div>
+      </div>
+      <div class="compare-col after">
+        <div class="compare-header good">✅ Après les formations</div>
+        <div class="compare-item">
+          <span class="compare-icon">🤖</span>
+          <div class="compare-text"><strong>IA :</strong> Le même email en 4 min. 200+ outils classés par usage. 100+ prompts prêts à copier-coller.</div>
+        </div>
+        <div class="compare-item">
+          <span class="compare-icon">🛒</span>
+          <div class="compare-text"><strong>E-commerce :</strong> Méthode produit gagnant validée. Shopify + Amazon FBA de A à Z. Plan 30 jours structuré.</div>
+        </div>
+        <div class="compare-item">
+          <span class="compare-icon">📈</span>
+          <div class="compare-text"><strong>Trading :</strong> Gestion du risque maîtrisée. Analyse technique complète. Journal de trading et plan 60 jours.</div>
+        </div>
+        <div class="compare-item">
+          <span class="compare-icon">₿</span>
+          <div class="compare-text"><strong>Crypto :</strong> DCA automatisé. Cycle de marché compris. On-chain analytics pour anticiper les mouvements.</div>
+        </div>
+        <div class="compare-item">
+          <span class="compare-icon">🎯</span>
+          <div class="compare-text"><strong>Polymarket :</strong> 3 stratégies gagnantes. Kelly Criterion appliqué. Edge informationnel identifié et exploité.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 3 — RÉSULTATS POSSIBLES -->
+<section class="section fade-in">
+  <div class="container">
+    <div class="section-label">
+      <div class="section-label-dot" style="background:var(--green)"></div>
+      <h2>Ce qui devient possible</h2>
+      <span>Résultats possibles — non garantis</span>
+    </div>
+    <div class="results-grid">
+      <div class="result-card c1">
+        <span class="result-emoji">🚀</span>
+        <div class="result-title">Contenu 10x plus rapide</div>
+        <div class="result-desc">Créer tes posts TikTok, Instagram et YouTube avec les workflows IA du Pack IA — ce qui prenait 2h se fait en 15 min.</div>
+      </div>
+      <div class="result-card c2">
+        <span class="result-emoji">🛒</span>
+        <div class="result-title">Première boutique rentable</div>
+        <div class="result-desc">Lancer une boutique Shopify avec un produit validé et une stratégie pub structurée en 30 jours grâce au Pack E-commerce.</div>
+      </div>
+      <div class="result-card c3">
+        <span class="result-emoji">📈</span>
+        <div class="result-title">Trader avec méthode</div>
+        <div class="result-desc">Passer de trader émotionnel à trader discipliné avec un plan, un journal et une gestion du risque réelle. Plan 60 jours inclus.</div>
+      </div>
+      <div class="result-card c4">
+        <span class="result-emoji">₿</span>
+        <div class="result-title">Investir sans paniquer</div>
+        <div class="result-desc">Construire un portefeuille crypto avec une stratégie DCA solide et comprendre les cycles de marché pour prendre les bonnes décisions.</div>
+      </div>
+      <div class="result-card c5">
+        <span class="result-emoji">🎯</span>
+        <div class="result-title">Edge sur Polymarket</div>
+        <div class="result-desc">Identifier les marchés mal pricés avec une méthode concrète et un bankroll management pour jouer sur la durée.</div>
+      </div>
+      <div class="result-card c6">
+        <span class="result-emoji">💰</span>
+        <div class="result-title">Monétiser ses compétences IA</div>
+        <div class="result-desc">Proposer des services IA à des clients (rédaction, automatisation, création) une fois les outils maîtrisés.</div>
+      </div>
+    </div>
+    <div class="disclaimer">
+      <span class="disclaimer-icon">⚠️</span>
+      <div class="disclaimer-text">
+        <strong>Disclaimer :</strong> Ces résultats sont possibles mais non garantis. Ils dépendent de ton implication personnelle, de ton contexte et du travail que tu y consacres. Ces formations te donnent les méthodes — les résultats dépendent de toi.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 4 — CONTENU DES PACKS -->
+<section class="section fade-in">
+  <div class="container">
+    <div class="section-label">
+      <div class="section-label-dot" style="background:var(--orange)"></div>
+      <h2>Ce que contient exactement chaque pack</h2>
+      <span>Accès immédiat après paiement</span>
+    </div>
+    <div class="packs-grid">
+      <div class="pack-card ia">
+        <div class="pack-glow"></div>
+        <span class="pack-emoji">🤖</span>
+        <div class="pack-name">Pack IA Complet</div>
+        <div class="pack-price" style="color:var(--red)">37$</div>
+        <ul class="pack-items">
+          <li style="color:var(--red)">200+ outils IA classés par usage</li>
+          <li>100+ prompts prêts à copier-coller</li>
+          <li>Méthode RCTF complète</li>
+          <li>7 workflows par profil</li>
+          <li>7 erreurs à éviter</li>
+        </ul>
+      </div>
+      <div class="pack-card ecom">
+        <div class="pack-glow"></div>
+        <span class="pack-emoji">🛒</span>
+        <div class="pack-name">Pack E-commerce</div>
+        <div class="pack-price" style="color:var(--blue)">97$</div>
+        <ul class="pack-items">
+          <li style="color:var(--blue)">Shopify de A à Z</li>
+          <li>Amazon FBA complet</li>
+          <li>Stratégie pub Meta & TikTok</li>
+          <li>30+ prompts IA e-commerce</li>
+          <li>Plan d'action 30 jours</li>
+        </ul>
+      </div>
+      <div class="pack-card trading">
+        <div class="pack-glow"></div>
+        <span class="pack-emoji">📈</span>
+        <div class="pack-name">Pack Trading</div>
+        <div class="pack-price" style="color:var(--green)">97$</div>
+        <ul class="pack-items">
+          <li style="color:var(--green)">Analyse technique complète</li>
+          <li>Gestion du risque & Money Mgmt</li>
+          <li>Stratégies Swing + SMC</li>
+          <li>30+ prompts IA trading</li>
+          <li>Plan entraînement 60 jours</li>
+        </ul>
+      </div>
+      <div class="pack-card crypto">
+        <div class="pack-glow"></div>
+        <span class="pack-emoji">₿</span>
+        <div class="pack-name">Pack Crypto & Polymarket</div>
+        <div class="pack-price" style="color:var(--orange)">67$</div>
+        <ul class="pack-items">
+          <li style="color:var(--orange)">BTC, ETH, Altcoins, DeFi</li>
+          <li>Stratégies d'investissement</li>
+          <li>Polymarket — 3 stratégies</li>
+          <li>30+ prompts IA crypto</li>
+          <li>Plan investissement 90 jours</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SECTION 5 — TÉMOIGNAGES -->
+<section class="section fade-in">
+  <div class="container">
+    <div class="section-label">
+      <div class="section-label-dot" style="background:var(--purple)"></div>
+      <h2>Ils ont testé les formations</h2>
+      <span>Témoignages vérifiés</span>
+    </div>
+    <div class="testimonials-grid">
+
+      <!-- TÉMOIGNAGE PLACEHOLDER — à remplacer par vrais témoignages -->
+      <div class="testi-placeholder">
+        <p style="font-size:32px; margin-bottom:12px;">💬</p>
+        <p><strong>Les premiers avis arrivent bientôt.</strong><br><br>Tu peux être parmi les premiers à tester et laisser ton retour — contacte @Mr.Vealon sur TikTok.</p>
+      </div>
+
+      <!-- EXEMPLE DU FORMAT À UTILISER QUAND TU AURAS DES VRAIS TÉMOIGNAGES -->
+      <!--
+      <div class="testimonial">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"La partie prompts est incroyable — j'ai divisé par 3 le temps que je passe sur mes contenus Instagram. Je l'ai appliqué dès le lendemain."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:rgba(233,69,96,0.15);color:var(--red)">T</div>
+          <div>
+            <div class="author-name">Thomas R.</div>
+            <div class="author-role">Auto-entrepreneur</div>
+          </div>
+        </div>
+        <div class="testimonial-pack">
+          Pack testé :
+          <span class="pack-tag" style="background:rgba(233,69,96,0.15);color:var(--red)">🤖 Pack IA</span>
+        </div>
+      </div>
+      -->
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA FINAL -->
+<section class="cta-section">
+  <div class="container">
+    <h2>Prêt à passer à l'action ?</h2>
+    <p>Accès immédiat à toutes les formations sur Gumroad.</p>
+    <a href="https://mrvealon.gumroad.com" class="cta-btn">Voir toutes les formations →</a>
+  </div>
+</section>
+
+<script>
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
